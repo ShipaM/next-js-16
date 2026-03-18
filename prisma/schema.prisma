@@ -1,0 +1,141 @@
+// Это файл схемы Prisma - определяет структуру базы данных
+// Документация: https://pris.ly/d/prisma-schema
+
+// Генератор клиента Prisma - создаёт типобезопасный клиент для работы с БД
+generator client {
+  // Провайдер для генерации клиента
+  provider = "prisma-client"
+  // Путь для генерации клиента (в папку lib/generated/prisma)
+  output   = "../lib/generated/prisma"
+}
+
+// Источник данных - подключение к базе данных
+datasource db {
+  // Тип базы данных - PostgreSQL
+  provider = "postgresql"
+}
+
+// Модель пользователя
+model User {
+  // Уникальный идентификатор (CUID)
+  id String @id @default(cuid())
+  // Email пользователя (уникальный)
+  email String @unique
+  // Имя пользователя (опционально)
+  name String?
+  // Хэш пароля пользователя
+  password String
+
+  // Связь: у пользователя может быть много сборок (Build)
+  builds Build[]
+  // Связь: у пользователя может быть много лайков (Like)
+  likes Like[]
+
+  // Дата создания записи (автоматически при создании)
+  createdAt DateTime @default(now())
+}
+
+// Модель компонента ПК
+model Component {
+  // Уникальный идентификатор (CUID)
+  id String @id @default(cuid())
+  // Тип компонента (CPU, GPU, RAM и т.д.)
+  type ComponentType
+  // Название компонента
+  name String
+  // Цена компонента (в целых единицах, например копейках)
+  price Int
+
+  // Сокет компонента (для совместимости с материнской платой)
+  socket String?
+
+  // Связь: компонент может быть в множестве сборок
+  buildComponents BuildComponent[]
+}
+
+// Модель сборки ПК
+model Build {
+  // Уникальный идентификатор (CUID)
+  id String @id @default(cuid())
+  // Название сборки
+  name String
+  // Общая цена сборки (по умолчанию 0)
+  totalPrice Int @default(0)
+
+  // ID пользователя, создавшего сборку
+  userId String
+  // Связь: сборка принадлежит одному пользователю
+  // onDelete: Cascade - при удалении пользователя удаляются его сборки
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Связь: сборка содержит много компонентов (через BuildComponent)
+  components BuildComponent[]
+
+  // Публична ли сборка (доступна другим пользователям)
+  isPublic Boolean @default(false)
+
+  // Связь: сборка может иметь много лайков
+  likes Like[]
+
+  // Дата создания сборки (автоматически при создании)
+  createdAt DateTime @default(now())
+}
+
+// Промежуточная модель для связи многие-ко-многим между Build и Component
+model BuildComponent {
+  // Уникальный идентификатор (CUID)
+  id String @id @default(cuid())
+  // ID сборки
+  buildId String
+  // Связь: запись принадлежит одной сборке
+  // onDelete: Cascade - при удалении сборки удаляются связанные компоненты
+  build Build @relation(fields: [buildId], references: [id], onDelete: Cascade)
+
+  // ID компонента
+  componentId String
+  // Связь: запись принадлежит одному компоненту
+  // onDelete: Cascade - при удалении компонента удаляются связанные записи
+  component Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+
+  // Уникальность: один компонент не может быть добавлен в сборку дважды
+  @@unique([buildId, componentId])
+}
+
+// Модель лайка сборки
+model Like {
+  // Уникальный идентификатор (CUID)
+  id String @id @default(cuid())
+  // ID пользователя, который лайкнул
+  userId String
+  // ID сборки, которую лайкнули
+  buildId String
+
+  // Связь: лайк принадлежит одному пользователю
+  // onDelete: Cascade - при удалении пользователя удаляются его лайки
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Связь: лайк принадлежит одной сборке
+  // onDelete: Cascade - при удалении сборки удаляются её лайки
+  build Build @relation(fields: [buildId], references: [id], onDelete: Cascade)
+
+  // Уникальность: пользователь может лайкнуть сборку только один раз
+  @@unique([userId, buildId])
+}
+
+// Перечисление типов компонентов
+enum ComponentType {
+  // Процессор (CPU)
+  cpu
+  // Видеокарта (GPU)
+  gpu
+  // Оперативная память (RAM)
+  ram
+  // Твердотельный накопитель (SSD)
+  ssd
+  // Материнская плата
+  motherboard
+  // Блок питания (PSU)
+  psu
+  // Корпус
+  case
+  cooler
+}
