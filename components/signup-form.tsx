@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
@@ -22,7 +22,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
     <Card {...props}>
       <CardHeader>
-        <CardTitle>Create </CardTitle>
+        <CardTitle>Create an account</CardTitle>
       </CardHeader>
       <CardContent>
         <form action={formAction}>
@@ -32,8 +32,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <Input
                 id="name"
                 type="text"
-                name="name"
                 placeholder="John Doe"
+                name="name"
                 required
               />
             </Field>
@@ -42,24 +42,24 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <Input
                 id="email"
                 type="email"
-                name="email"
                 placeholder="example@example.com"
                 required
+                name="email"
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Пароль</FieldLabel>
-              <Input id="password" name="password" type="password" required />
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <Input id="password" type="password" name="password" required />
               <FieldDescription>
-                Password must be at least 8 characters long
+                Must be at least 8 characters long.
               </FieldDescription>
             </Field>
             {state?.error && <ErrorMessage message={state.error} />}
             <FieldGroup>
               <Field>
-                <Button type="submit">Create account</Button>
+                <Button type="submit">Create Account</Button>
                 <FieldDescription className="px-6 text-center">
-                  Do you have an account? <a href="/login">Login</a>
+                  Already have an account? <a href="/login">Sign in</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>

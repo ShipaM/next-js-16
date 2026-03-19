@@ -1,10 +1,11 @@
 "use server";
+
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
-const MIN_PASSWORD_LENGTH = 8;
-const EMAIL_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGHT = 8;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type SignupState = { error?: string };
 
@@ -16,32 +17,37 @@ export async function signupAction(
   const email = formData.get("email") as string | undefined;
   const password = formData.get("password") as string | undefined;
 
+  console.log("name", name, email, password);
+
   if (!email) {
     return { error: "Enter email" };
   }
 
-  if (!EMAIL_REGEXP.test(email)) {
-    return { error: "Enter valid email" };
+  if (!EMAIL_REGEX.test(email)) {
+    return { error: "Invalid email" };
   }
 
-  if (!password || password.length < MIN_PASSWORD_LENGTH) {
-    return { error: "Enter password at least 8 characters long" };
+  if (!password || password.length < MIN_PASSWORD_LENGHT) {
+    return { error: "Password must be at least 8 characters" };
   }
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    return { error: "User already exists" };
+  const existing = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existing) {
+    return { error: "Email already exists" };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.user.create({
     data: {
-      name,
       email,
+      name,
       password: hashedPassword,
     },
   });
 
-  return redirect("/login");
+  redirect("/login");
 }
