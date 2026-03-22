@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
+import { SkipToContent } from "@/components/skip-to-content";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -34,8 +35,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <SkipToContent />
         <Header />
-        {children}
+        <main id="main-content">{children}</main>
         <Toaster position="top-center" />
       </body>
     </html>

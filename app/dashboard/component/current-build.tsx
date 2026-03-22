@@ -24,13 +24,25 @@ export const CurrentBuild: FC = () => {
   );
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 md:mb-8">
+      <div
+        className="flex flex-col sm:flex-row justify-between gap-4 mb-6 md:mb-8"
+        role="region"
+        aria-label="Build actions"
+      >
         <TypographyH1>Build your collection</TypographyH1>
-        <Button onClick={() => setSaveDialogOpen(true)} className="shrink-0">
+        <Button
+          onClick={() => setSaveDialogOpen(true)}
+          className="shrink-0"
+          aria-label="Save current build"
+        >
           Save build
         </Button>
       </div>
-      <div className="min-w-0 overflow-x-auto">
+      <div
+        className="min-w-0 overflow-x-auto"
+        role="region"
+        aria-label="Component selection table"
+      >
         <TableParts
           components={componentCategories}
           onSelectedComponent={onSelectComponent}

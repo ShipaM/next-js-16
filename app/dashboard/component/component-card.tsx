@@ -19,6 +19,8 @@ export const ComponentCard: FC<ComponentCardProps> = ({
   price,
   onClick,
 }) => {
+  const formattedPrice = new Intl.NumberFormat("ru-RU").format(price);
+
   return (
     <Card>
       <CardHeader className="min-h-0 flex-1 pb-2">
@@ -26,7 +28,8 @@ export const ComponentCard: FC<ComponentCardProps> = ({
           {name}
         </CardTitle>
         <CardDescription className="text-sm font-medium tabular-nums">
-          {new Intl.NumberFormat("ru-RU").format(price)}
+          <span className="sr-only">Price: </span>
+          {formattedPrice}
         </CardDescription>
       </CardHeader>
       <CardFooter className="pt-0">
@@ -35,6 +38,7 @@ export const ComponentCard: FC<ComponentCardProps> = ({
           size="sm"
           className="w-full gap-1.5"
           onClick={onClick}
+          aria-label={`Add ${name} to build, price: ${formattedPrice}`}
         >
           Add
         </Button>
