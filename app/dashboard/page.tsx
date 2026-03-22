@@ -1,4 +1,5 @@
 import { CurrentBuild } from "./component/current-build";
+import { PopularBuildCard } from "./component/popular-build-card";
 
 const dashboard = () => {
   return (
@@ -6,7 +7,9 @@ const dashboard = () => {
       <div className="min-w-0 flex-1">
         <CurrentBuild />
       </div>
-      <aside className="shrink-0 lg:sticky lg:top-6 lg:w-80"></aside>
+      <aside className="shrink-0 lg:sticky lg:top-6 lg:w-80">
+        <PopularBuildCard />
+      </aside>
     </div>
   );
 };
