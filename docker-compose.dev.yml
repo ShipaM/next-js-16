@@ -1,10 +1,10 @@
-# Docker Compose для production
-# Запуск: docker-compose up
+# Docker Compose для локальной разработки
+# Запуск: docker-compose -f docker-compose.dev.yml up
 #
 # Особенности:
-# - Production сборка Next.js
-# - Оптимизированный размер образа (multi-stage build)
-# - Prisma миграции и seed данные при старте
+# - Hot reload: изменения в коде автоматически подхватываются
+# - Development режим Next.js с TurboPack
+# - Prisma миграции выполняются при старте
 # - Данные БД сохраняются в volume между перезапусками
 
 services:
@@ -32,11 +32,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
     restart: unless-stopped
     depends_on:
       - postgres
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
@@ -44,6 +45,14 @@ services:
     ports:
       # Доступ к приложению: localhost:3000
       - "3000:3000"
+    volumes:
+      # Монтирование кода для hot reload
+      - .:/app
+      # Исключение node_modules (используются внутри контейнера)
+      - /app/node_modules
+      # Исключение .next (генерируется внутри контейнера)
+      - /app/.next
+    command: sh -c "npx prisma migrate deploy && if [ \"$RUN_SEED_ON_START\" = \"true\" ]; then npx tsx prisma/seed.ts; fi && npm run dev -- --hostname 0.0.0.0"
 
 volumes:
   postgres_data:
