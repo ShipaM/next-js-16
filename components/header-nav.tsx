@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
-import { LayoutList, Plus, Users } from "lucide-react";
+import { LayoutList, Menu, Plus, Users, X } from "lucide-react";
 import { signOut } from "next-auth/react";
 import type { FC } from "react";
+import { useState } from "react";
 
 type HeaderNavProps = {
   session: Session | null;
@@ -17,11 +18,12 @@ type HeaderNavProps = {
 export const HeaderNav: FC<HeaderNavProps> = ({ session }) => {
   const pathname = usePathname();
   const tabValue = getTabValue(pathname);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!session?.user) {
     return (
       <div className="flex justify-end">
-        <Button variant="secondary">
+        <Button variant="secondary" size="sm">
           <Link href="/login">Login</Link>
         </Button>
       </div>
@@ -29,42 +31,112 @@ export const HeaderNav: FC<HeaderNavProps> = ({ session }) => {
   }
 
   return (
-    <div className="grid grid-cols-3 items-center gap-4">
-      <div />
-      <div className="flex jusify-center">
-        <Tabs value={tabValue} className="w-fit">
-          <TabsList>
-            <TabsTrigger value="dashboard" asChild>
-              <Link href="/dashboard">
-                <Plus className="h-4 w-4" />
-                Create collection
-              </Link>
-            </TabsTrigger>
-            <TabsTrigger value="builds" asChild>
-              <Link href="/builds">
-                <LayoutList className="h-4 w-4" />
-                My collections
-              </Link>
-            </TabsTrigger>
-            <TabsTrigger value="explore" asChild>
-              <Link href="/builds/explore">
-                <Users className="h-4 w-4" />
-                Public collections
-              </Link>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+    <>
+      {/* Desktop navigation */}
+      <div className="hidden md:grid grid-cols-3 items-center gap-4">
+        <div />
+        <div className="flex justify-center">
+          <Tabs value={tabValue} className="w-fit">
+            <TabsList>
+              <TabsTrigger value="dashboard" asChild>
+                <Link href="/dashboard">
+                  <Plus className="h-4 w-4" />
+                  Create collection
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger value="builds" asChild>
+                <Link href="/builds">
+                  <LayoutList className="h-4 w-4" />
+                  My collections
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger value="explore" asChild>
+                <Link href="/builds/explore">
+                  <Users className="h-4 w-4" />
+                  Public collections
+                </Link>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            type="button"
+            onClick={() => signOut({ redirectTo: "/" })}
+          >
+            Logout
+          </Button>
+        </div>
       </div>
-      <div className="flex justify-end">
+
+      {/* Mobile navigation */}
+      <div className="md:hidden flex items-center justify-end gap-2">
         <Button
           variant="ghost"
           size="sm"
           type="button"
           onClick={() => signOut({ redirectTo: "/" })}
+          className="h-9 px-3"
         >
           Logout
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 w-9 p-0"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? (
+            <X className="h-4 w-4" />
+          ) : (
+            <Menu className="h-4 w-4" />
+          )}
+        </Button>
       </div>
-    </div>
+
+      {/* Mobile menu dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-16 right-4 z-50 bg-background border rounded-lg shadow-lg p-2 flex flex-col gap-1">
+          <Button
+            variant={tabValue === "dashboard" ? "secondary" : "ghost"}
+            size="sm"
+            className="justify-start"
+            asChild
+          >
+            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Create collection
+            </Link>
+          </Button>
+          <Button
+            variant={tabValue === "builds" ? "secondary" : "ghost"}
+            size="sm"
+            className="justify-start"
+            asChild
+          >
+            <Link href="/builds" onClick={() => setMobileMenuOpen(false)}>
+              <LayoutList className="h-4 w-4 mr-2" />
+              My collections
+            </Link>
+          </Button>
+          <Button
+            variant={tabValue === "explore" ? "secondary" : "ghost"}
+            size="sm"
+            className="justify-start"
+            asChild
+          >
+            <Link
+              href="/builds/explore"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Users className="h-4 w-4 mr-2" />
+              Public collections
+            </Link>
+          </Button>
+        </div>
+      )}
+    </>
   );
 };

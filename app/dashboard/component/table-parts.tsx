@@ -19,6 +19,7 @@ import {
   HardDrive,
   MemoryStick,
   Monitor,
+  Pencil,
   Plus,
   Server,
   Zap,
@@ -35,6 +36,17 @@ const iconMap: Record<ComponentCategory["icon"], React.ElementType> = {
   Zap,
   Box,
   Fan,
+};
+
+const iconLabels: Record<string, string> = {
+  Cpu: "CPU",
+  Monitor: "Monitor",
+  Server: "Case",
+  MemoryStick: "RAM",
+  HardDrive: "Storage",
+  Zap: "PSU",
+  Box: "Motherboard",
+  Fan: "Cooling",
 };
 
 type CategoryRow = {
@@ -68,10 +80,12 @@ export const TableParts: FC<TablePartsProps> = ({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Component</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Model</TableHead>
-          <TableHead>Price</TableHead>
+          <TableHead className="w-[50px] sm:w-[100px]">Component</TableHead>
+          <TableHead className="hidden sm:table-cell">Type</TableHead>
+          <TableHead className="max-w-[120px] sm:max-w-none truncate">
+            Model
+          </TableHead>
+          <TableHead className="hidden md:table-cell">Price</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -83,13 +97,25 @@ export const TableParts: FC<TablePartsProps> = ({
           return (
             <TableRow key={category.id} className="my-2">
               <TableCell>
-                <div className="flex tems-center">
-                  <Icon className="h-5 w-5 mr-1" />
+                <div
+                  className="flex items-center"
+                  title={iconLabels[category.icon]}
+                >
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5 mr-1" />
                 </div>
               </TableCell>
-              <TableCell className="font-bold">{category.name}</TableCell>
-              <TableCell>{selected?.name ?? "-"}</TableCell>
-              <TableCell>{selected?.price ?? "-"}</TableCell>
+              <TableCell className="hidden sm:table-cell font-bold">
+                {category.name}
+              </TableCell>
+              <TableCell
+                className="font-medium max-w-[120px] sm:max-w-none truncate"
+                title={selected?.name}
+              >
+                {selected?.name ?? "-"}
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {selected?.price ?? "-"}
+              </TableCell>
               <TableCell className="text-right">
                 <Dialog
                   open={openCategoryId === category.id}
@@ -98,9 +124,21 @@ export const TableParts: FC<TablePartsProps> = ({
                   }
                 >
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Plus className="h-4 w-4 mr-1" />
-                      {selected ? "Edit" : "Add"}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-2 sm:px-3 flex items-center gap-2"
+                    >
+                      <span>
+                        {selected ? (
+                          <Pencil className="h-4 w-4" />
+                        ) : (
+                          <Plus className="h-4 w-4" />
+                        )}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {selected ? "Edit" : "Add"}
+                      </span>
                     </Button>
                   </DialogTrigger>
                   <AddComponentDialogContent
@@ -121,8 +159,8 @@ export const TableParts: FC<TablePartsProps> = ({
         <TableRow>
           <TableCell colSpan={5}>
             <p className="font-medium">Price:</p>
-            <p className="font-large text-gray500">
-              {new Intl.NumberFormat("en-En").format(totalPrice)}
+            <p className="font-large text-gray-500">
+              {new Intl.NumberFormat("en-EN").format(totalPrice)}
             </p>
           </TableCell>
         </TableRow>

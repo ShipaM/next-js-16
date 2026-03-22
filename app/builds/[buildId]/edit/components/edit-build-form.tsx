@@ -68,9 +68,13 @@ export const EditBuildForm: FC<EditBuildFormProps> = ({
 
   return (
     <>
-      <div className="flex justify-between mb-8">
-        <TypographyH3>Редактирование сборки - {buildName}</TypographyH3>
-        <Button onClick={() => setSaveDialogOpen(true)}>Save</Button>
+      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+        <TypographyH3 className="break-words">
+          Редактирование сборки - {buildName}
+        </TypographyH3>
+        <Button onClick={() => setSaveDialogOpen(true)} className="shrink-0">
+          Save
+        </Button>
       </div>
       <div className="flex-justify-center">
         <TableParts

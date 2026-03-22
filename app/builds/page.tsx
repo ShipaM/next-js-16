@@ -18,10 +18,10 @@ export default async function MyBuilds() {
   const builds = await getMyBuilds(session.user.id);
 
   return (
-    <div className="py-6">
+    <div className="py-4 sm:py-6 px-4">
       <TypographyH3>My builds</TypographyH3>
       <br />
-      <div className="grid grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {builds.length > 0 ? (
           builds.map((b) => (
             <BuildCard key={b.id} build={b}>
@@ -39,6 +39,7 @@ export default async function MyBuilds() {
                 <Button
                   type="submit"
                   variant={`${b.isPublic ? "default" : "ghost"}`}
+                  size="sm"
                 >
                   <Share2
                     className={`h-4 w-4 mr-1 ${b.isPublic ? "fill-background" : ""}  `}

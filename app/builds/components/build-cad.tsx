@@ -38,16 +38,16 @@ export const BuildCard: FC<BuildCardProps> = ({ build, children }) => {
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-2 flex flex-row items-start justify-between gap-2">
-        <div className="min-w-0 flex">
+        <div className="min-w-0 flex-1">
           <CardTitle>
-            <TypographyH3>{build.name}</TypographyH3>
+            <TypographyH3 className="break-words">{build.name}</TypographyH3>
           </CardTitle>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1 break-words">
             Created by: {build.user?.email?.trim()}
           </p>
         </div>
-        <div className="shrink-0">
-          <Button>
+        <div className="shrink-0 ml-2">
+          <Button size="sm">
             <Link href={`/builds/${build.id}/edit`}>
               <Pencil className="h-4 w-4" />
             </Link>
@@ -58,23 +58,25 @@ export const BuildCard: FC<BuildCardProps> = ({ build, children }) => {
         {build.components.length && (
           <>
             <p className="text-sm font-medium mt-2">Components:</p>
-            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-0 5">
+            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-0.5">
               {build.components.map((bc) => (
-                <li key={bc.id}>{bc.component.name}</li>
+                <li key={bc.id} className="break-words">
+                  {bc.component.name}
+                </li>
               ))}
             </ul>
           </>
         )}
       </CardContent>
-      <CardFooter className="flex flex-row justify-between gap-2 pt-4 bprder-t">
+      <CardFooter className="flex flex-row justify-between gap-2 pt-4 border-t">
         <CardDescription className="text-sm font-medium tabular-nums flex flex-col justify-between">
           <span className="text-sky-500 text-lg font-bold">
-            {new Intl.NumberFormat("ru-Ru").format(build.totalPrice)}
+            {new Intl.NumberFormat("ru-RU").format(build.totalPrice)}
           </span>
 
           {build.createdAt && (
             <p className="text-xs text-muted-foreground">
-              {new Intl.DateTimeFormat("ru-Ru").format(build.createdAt)}
+              {new Intl.DateTimeFormat("ru-RU").format(build.createdAt)}
             </p>
           )}
 

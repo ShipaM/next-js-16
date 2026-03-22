@@ -24,9 +24,11 @@ export const CurrentBuild: FC = () => {
   );
   return (
     <>
-      <div className="flex justify-between mb-8">
+      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 md:mb-8">
         <TypographyH1>Build your collection</TypographyH1>
-        <Button onClick={() => setSaveDialogOpen(true)}>Save build</Button>
+        <Button onClick={() => setSaveDialogOpen(true)} className="shrink-0">
+          Save build
+        </Button>
       </div>
       <div className="min-w-0 overflow-x-auto">
         <TableParts

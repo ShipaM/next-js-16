@@ -9,19 +9,19 @@ export async function PopularBuildCard() {
 
   if (builds.length === 0) {
     return (
-      <Card className="w-full shirk-0 lg:w-64">
+      <Card className="w-full shrink-0">
         <CardHeader>
           <CardTitle>Popular builds</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foregroud">No popular builds</p>
+          <p className="text-sm text-muted-foreground">No popular builds</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="w-full srink-0 lg:w-64">
+    <Card className="w-full shrink-0">
       <CardHeader>
         <CardTitle>Popular builds</CardTitle>
       </CardHeader>
@@ -32,13 +32,13 @@ export async function PopularBuildCard() {
             className="flex flex-col gap-1 rounded-lg border bg-muted/30 px-3 py-2"
           >
             <div className="flex items-start justify-between gap-2">
-              <p className="font-medium text sm leading-tight min-w-0">
+              <p className="font-medium text-sm leading-tight min-w-0 break-words">
                 {build.name}
               </p>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 shirnk-0"
+                className="h-8 w-8 shrink-0"
                 asChild
               >
                 <Link href={`/builds/${build.id}/edit`}>
@@ -47,8 +47,8 @@ export async function PopularBuildCard() {
               </Button>
             </div>
             <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span className="tablular-nums">
-                {new Intl.NumberFormat("en-En").format(build.totalPrice)}
+              <span className="tabular-nums">
+                {new Intl.NumberFormat("en-EN").format(build.totalPrice)}
               </span>
               <span className="flex items-center gap-1">
                 <ThumbsUp className="h-4 w-4" />

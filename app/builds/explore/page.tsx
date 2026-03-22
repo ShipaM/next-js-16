@@ -17,11 +17,11 @@ export default async function ExplorePage() {
   const builds = await getPublicBuild(session.user.id);
 
   return (
-    <div className="py-6">
+    <div className="py-4 sm:py-6 px-4">
       <TypographyH1>Public builds</TypographyH1>
       <br />
       {builds.length > 0 ? (
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {builds.map((b) => {
             const isLiked = Array.isArray(b.likes) && b.likes.length > 0;
 
@@ -47,7 +47,7 @@ export default async function ExplorePage() {
           })}
         </div>
       ) : (
-        <p className="text-muted-foregroud">No public builds</p>
+        <p className="text-muted-foreground">No public builds</p>
       )}
     </div>
   );
