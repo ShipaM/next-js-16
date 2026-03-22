@@ -1,19 +1,17 @@
-import type { FC, Ref } from "react";
+import type { FC, Ref, ForwardRefRenderFunction } from "react";
 import { cn } from "@/lib/utils";
+import { forwardRef } from "react";
 
 type ErrorMessageProps = {
   message: string;
   className?: string;
   tabIndex?: number;
-  ref?: Ref<HTMLParagraphElement>;
 };
 
-export const ErrorMessage: FC<ErrorMessageProps> = ({
-  message,
-  className,
-  tabIndex,
-  ref,
-}) => {
+export const ErrorMessage: FC<ErrorMessageProps> = forwardRef<
+  HTMLParagraphElement,
+  ErrorMessageProps
+>(function ErrorMessage({ message, className, tabIndex }, ref) {
   return (
     <p
       ref={ref}
@@ -25,4 +23,4 @@ export const ErrorMessage: FC<ErrorMessageProps> = ({
       {message}
     </p>
   );
-};
+});
