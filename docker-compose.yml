@@ -1,8 +1,7 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:15
     restart: unless-stopped
-    container_name: postgres-pcbuilder
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -16,12 +15,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
-      postgres: service_healthy
+      - postgres # ✅ только имя сервиса
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
